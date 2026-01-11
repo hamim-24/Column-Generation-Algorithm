@@ -18,7 +18,7 @@ public class ColumnGenerationSolver {
     private RestrictedMasterProblem masterProblem;
     private int maxColsPerIter;
 
-    // Statistics
+
     private int iterations = 0;
     private long startTime;
     private long endTime;
@@ -36,35 +36,37 @@ public class ColumnGenerationSolver {
         System.out.println("Step 4: Column Generation Execution");
         System.out.println("-----------------------------------");
 
-        // 1. Init RMP
+        // 1. init RMP
         masterProblem.generateInitialSolution();
 
         boolean improvement = true;
         while (improvement) {
             iterations++;
 
-            // 2. Solve RMP
+            // 2. solve RMP
             masterProblem.solve();
             double objVal = masterProblem.getObjectiveValue();
 
-            // 3. Get Duals
+            // 3. get Duals
             double[] dualArray = masterProblem.getDuals();
             Map<String, Double> dualMap = new HashMap<>();
+
             for (int i = 0; i < flights.size(); i++) {
                 dualMap.put(flights.get(i).getFlightId(), dualArray[i]);
             }
 
-            // 4. Solve PP
+            // 4. solve PP
             List<Pairing> newColumns = pricingProblem.solve(dualMap);
 
-            // 5. Add columns (limit to maxColsPerIter, selecting best reduced costs)
             int addedCount = 0;
             double bestRedCost = 0;
 
-            // Calculate reduced costs and collect
+            // calculate reduced costs and collect
             List<Pairing> candidates = new ArrayList<>();
+
             for (Pairing p : newColumns) {
                 double rc = p.getCost();
+
                 for (Flight f : p.getFlights()) {
                     rc -= dualMap.getOrDefault(f.getFlightId(), 0.0);
                 }
@@ -74,24 +76,24 @@ public class ColumnGenerationSolver {
                 if (rc < bestRedCost) bestRedCost = rc;
             }
 
-            // Sort by reduced cost ascending (most negative first)
             candidates.sort(Comparator.comparingDouble(p -> {
-                double rc = p.getCost();
+                double rc = p.getCost(); // variable cost
+
                 for (Flight f : p.getFlights()) {
+                    // reduced cost
                     rc -= dualMap.getOrDefault(f.getFlightId(), 0.0);
                 }
                 return rc;
             }));
 
-            // Add top maxColsPerIter
+
             for (int i = 0; i < Math.min(candidates.size(), maxColsPerIter); i++) {
                 Pairing p = candidates.get(i);
                 masterProblem.addColumn(p);
                 addedCount++;
             }
 
-            System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n",
-                    iterations, objVal, addedCount, bestRedCost);
+            System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n", iterations, objVal, addedCount, bestRedCost);
 
             if (addedCount == 0) {
                 improvement = false;
@@ -114,7 +116,7 @@ public class ColumnGenerationSolver {
             System.out.println(p.toString());
         }
 
-        // Cleanup
+
         masterProblem.close();
     }
 }

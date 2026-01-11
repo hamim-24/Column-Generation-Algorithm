@@ -117,10 +117,9 @@ public class PricingProblem {
         if (turn < minTurnaroundMin)
             return false;
 
-        // If times loop around (e.g. 23:00 -> 01:00), turn might be calculated as
-        // negative or large?
+        // if times loop around (e.g. 23:00 -> 01:00), turn might be calculated as negative or large?
         // simple TimeUtils.minutesBetween implies same day if we just use LocalTime.
-        // If f2.dep < f1.arr, it's next day.
+        // if f2.dep < f1.arr, it's next day.
         if (f2.getDepTime().isBefore(f1.getArrTime())) {
             if (!allowOvernight)
                 return false;
@@ -159,18 +158,9 @@ public class PricingProblem {
         if (hasNight)
             cost += nightPenalty;
 
-        // Overtime
+        // overtime
         double duty = calculateDutyTime(path);
-        // Assuming overtime threshold is standard (e.g. > 8 hours or something? prompt
-        // says "Overtime penalty per hour")
-        // But prompt input asks "Overtime penalty per hour" without specifying
-        // threshold?
-        // Typically max duty is separate from overtime threshold. Let's assume overtime
-        // threshold = maxFlyingTime?
-        // Or maybe standard 8h? Let's use a standard 8h or just ignore if not
-        // specified.
-        // Prompt just says "Overtime penalty (if duty exceeds threshold)". Let's assume
-        // threshold = 8h.
+
         if (duty > 8.0) {
             cost += (duty - 8.0) * overtimePenaltyPerHour;
         }
@@ -186,5 +176,4 @@ public class PricingProblem {
         return p.getCost() - dualSum;
     }
 
-    // Helper to facilitate Mapping
 }
