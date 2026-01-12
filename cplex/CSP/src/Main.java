@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class Main {
     
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
 
         utils.header("Crew Scheduling Problem");
@@ -50,6 +51,7 @@ public class Main {
             System.out.println("Enter home base airport (default: " + defaultBase + ")");
             System.out.print(":: ");
             String base = scanner.nextLine().trim();
+            
             if (base.isEmpty()) {
                 if (flights.isEmpty()) {
                     System.err.println("Error: No flights loaded, cannot set default base.");

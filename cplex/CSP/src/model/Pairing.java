@@ -5,15 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Pairing {
+
     private List<Flight> flights;
     private double cost;
 
     public Pairing() {
+
         this.flights = new ArrayList<>();
         this.cost = 0.0;
     }
 
     public Pairing(List<Flight> flights, double cost) {
+        
         this.flights = new ArrayList<>(flights);
         this.cost = cost;
     }

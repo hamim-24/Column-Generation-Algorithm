@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import util.TimeUtils;
 
 public class Flight {
+    
     private String flightId;
     private String from;
     private String to;
@@ -17,6 +18,7 @@ public class Flight {
 
     public Flight(String flightId, String from, String to, String depTimeStr, String arrTimeStr, 
                   double durationHours, String aircraft, String base, double flightCost, int night) {
+
         this.flightId = flightId;
         this.from = from;
         this.to = to;

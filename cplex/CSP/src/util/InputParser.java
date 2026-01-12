@@ -10,12 +10,16 @@ import java.util.List;
 public class InputParser {
 
     public static List<Flight> parseFlights(String filePath) throws IOException {
+
         List<Flight> flights = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
             String line;
             boolean firstLine = true;
+
             while ((line = br.readLine()) != null) {
+
                 if (line.trim().isEmpty() || line.startsWith("---") || line.startsWith("inputId")) {
                     continue; // Skip empty lines, separators, or headers if not standard
                 }
@@ -26,6 +30,7 @@ public class InputParser {
                 }
 
                 String[] parts = line.split(",");
+                
                 if (parts.length < 10)
                     continue;
 

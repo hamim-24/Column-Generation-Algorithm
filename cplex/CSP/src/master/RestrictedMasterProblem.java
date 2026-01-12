@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RestrictedMasterProblem {
+
     private IloCplex cplex;
     private List<Flight> flights;
     private List<Pairing> columns;
@@ -18,6 +19,7 @@ public class RestrictedMasterProblem {
     private Map<Pairing, IloNumVar> variables;
 
     public RestrictedMasterProblem(List<Flight> flights) throws IloException {
+
         this.flights = flights;
         this.columns = new ArrayList<>();
         this.constraints = new HashMap<>();
@@ -43,6 +45,7 @@ public class RestrictedMasterProblem {
     }
 
     public void addColumn(Pairing pairing) throws IloException {
+
         columns.add(pairing);
 
         IloColumn col = cplex.column(cplex.getObjective(), pairing.getCost());
@@ -58,11 +61,14 @@ public class RestrictedMasterProblem {
     }
 
     public void solve() throws IloException {
+
         cplex.solve();
     }
 
     public double[] getDuals() throws IloException {
+
         double[] duals = new double[flights.size()];
+
         for (int i = 0; i < flights.size(); i++) {
             duals[i] = cplex.getDual(constraints.get(flights.get(i)));
         }
@@ -70,10 +76,12 @@ public class RestrictedMasterProblem {
     }
 
     public double getObjectiveValue() throws IloException {
+
         return cplex.getObjValue();
     }
 
     public void close() {
+
         cplex.end();
     }
 
@@ -88,7 +96,9 @@ public class RestrictedMasterProblem {
     }
 
     public List<Pairing> getSolution() throws IloException {
+
         List<Pairing> selected = new ArrayList<>();
+        
         for (Pairing p : columns) {
             double val = cplex.getValue(variables.get(p));
             if (val > 0.0001) {

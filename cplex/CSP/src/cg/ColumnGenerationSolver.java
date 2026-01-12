@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ColumnGenerationSolver {
+
     private List<Flight> flights;
     private PricingProblem pricingProblem;
     private RestrictedMasterProblem masterProblem;
@@ -24,6 +25,7 @@ public class ColumnGenerationSolver {
     private long endTime;
 
     public ColumnGenerationSolver(List<Flight> flights, PricingProblem pricingProblem, int maxColsPerIter) throws IloException {
+
         this.flights = flights;
         this.pricingProblem = pricingProblem;
         this.masterProblem = new RestrictedMasterProblem(flights);
@@ -31,6 +33,7 @@ public class ColumnGenerationSolver {
     }
 
     public void solve() throws IloException {
+
         startTime = System.currentTimeMillis();
 
         System.out.println("Step 4: Column Generation Execution");
@@ -104,6 +107,7 @@ public class ColumnGenerationSolver {
     }
 
     public void printSolution() throws IloException {
+
         System.out.println("\nSTEP 5: FINAL OUTPUT");
         System.out.println("--------------------");
         System.out.println("Total Cost: " + masterProblem.getObjectiveValue());
@@ -112,6 +116,7 @@ public class ColumnGenerationSolver {
         System.out.println("\nSelected Pairings:");
 
         List<Pairing> solution = masterProblem.getSolution();
+
         for (Pairing p : solution) {
             System.out.println(p.toString());
         }

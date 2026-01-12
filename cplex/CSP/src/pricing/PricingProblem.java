@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.Map;
 
 public class PricingProblem {
+
     private List<Flight> allFlights;
     private String base;
 
@@ -29,6 +30,7 @@ public class PricingProblem {
 
     public PricingProblem(List<Flight> allFlights, String base, double maxDutyHours, double maxFlyingHours,
                           long minTurnaroundMin, boolean allowOvernight, double fixedCost, double hourlyCost, double nightPenalty, double overtimePenaltyPerHour) {
+        
         this.allFlights = new ArrayList<>(allFlights);
         // sort flights by departure time
         this.allFlights.sort(Comparator.comparing(Flight::getDepTime));
@@ -53,6 +55,7 @@ public class PricingProblem {
      * list of generated pairings
      */
     public List<Pairing> solve(Map<String, Double> dualMap) {
+
         List<Pairing> newColumns = new ArrayList<>();
 
         // simple DFS approach to find valid pairings
@@ -90,6 +93,7 @@ public class PricingProblem {
 
         // try to extend
         for (Flight next : allFlights) {
+
             if (isValidConnection(current, next)) {
                 // check flying time
                 if (currentFlyingTime + next.getDurationHours() <= maxFlyingHours) {
@@ -128,8 +132,10 @@ public class PricingProblem {
     }
 
     private double calculateDutyTime(List<Flight> path) {
+
         if (path.isEmpty())
             return 0;
+
         LocalTime start = path.get(0).getDepTime();
         LocalTime end = path.get(path.size() - 1).getArrTime();
 
@@ -142,6 +148,7 @@ public class PricingProblem {
     }
 
     private Pairing createPairing(List<Flight> path) {
+
         double cost = 0;
         double flyingTime = 0;
         boolean hasNight = false;
@@ -155,6 +162,7 @@ public class PricingProblem {
 
         cost += fixedCost; // Fixed duty cost
         cost += (flyingTime * hourlyCost);
+
         if (hasNight)
             cost += nightPenalty;
 
@@ -169,7 +177,9 @@ public class PricingProblem {
     }
 
     private double calculateReducedCost(Pairing p, java.util.Map<String, Double> duals) {
+
         double dualSum = 0;
+        
         for (Flight f : p.getFlights()) {
             dualSum += duals.getOrDefault(f.getFlightId(), 0.0);
         }
