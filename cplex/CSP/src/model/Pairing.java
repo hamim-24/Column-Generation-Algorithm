@@ -45,7 +45,7 @@ public class Pairing {
 
     @Override
     public String toString() {
-        return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("-"))
+        return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("->"))
                 + " ($" + cost + ")";
     }
 }

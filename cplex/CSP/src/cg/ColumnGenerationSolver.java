@@ -36,7 +36,7 @@ public class ColumnGenerationSolver {
 
         startTime = System.currentTimeMillis();
 
-        System.out.println("Step 4: Column Generation Execution");
+        System.out.println("\nStep 4: Column Generation Execution");
         System.out.println("-----------------------------------");
 
         // 1. init RMP
@@ -89,13 +89,14 @@ public class ColumnGenerationSolver {
                 return rc;
             }));
 
-
+            // column adding step
             for (int i = 0; i < Math.min(candidates.size(), maxColsPerIter); i++) {
                 Pairing p = candidates.get(i);
                 masterProblem.addColumn(p);
                 addedCount++;
             }
-
+            
+            // showing the steps
             System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n", iterations, objVal, addedCount, bestRedCost);
 
             if (addedCount == 0) {
