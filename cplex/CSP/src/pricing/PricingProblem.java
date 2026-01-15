@@ -5,7 +5,6 @@ import model.Pairing;
 import util.TimeUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.time.LocalTime;
@@ -29,7 +28,8 @@ public class PricingProblem {
     private double overtimePenaltyPerHour;
 
     public PricingProblem(List<Flight> allFlights, String base, double maxDutyHours, double maxFlyingHours,
-                          long minTurnaroundMin, boolean allowOvernight, double fixedCost, double hourlyCost, double nightPenalty, double overtimePenaltyPerHour) {
+                          long minTurnaroundMin, boolean allowOvernight, double fixedCost, double hourlyCost, 
+                          double nightPenalty, double overtimePenaltyPerHour) {
         
         this.allFlights = new ArrayList<>(allFlights);
         // sort flights by departure time
@@ -82,10 +82,12 @@ public class PricingProblem {
         if (current.getTo().equals(base)) {
             // crheck full duty validity & Cost
             double dutyTime = calculateDutyTime(currentPath);
+
             if (dutyTime <= maxDutyHours) {
                 Pairing p = createPairing(currentPath);
                 double redCost = calculateReducedCost(p, duals);
-                if (redCost < -0.0001) { // negative reduced cost
+                // negative reduced cost
+                if (redCost < -0.0001) { 
                     solutions.add(p);
                 }
             }
@@ -111,30 +113,35 @@ public class PricingProblem {
         }
     }
 
+    //check location and turnarround time
     private boolean isValidConnection(Flight f1, Flight f2) {
-        // location connection
-        if (!f1.getTo().equals(f2.getFrom()))
+        // location connection f1.getTo() == f2.getFrom()
+        if (!f1.getTo().equals(f2.getFrom())) {
             return false;
+        }
 
         // time connection
         long turn = TimeUtils.minutesBetween(f1.getArrTime(), f2.getDepTime());
-        if (turn < minTurnaroundMin)
+        if (turn < minTurnaroundMin) {
             return false;
+        }
 
         // if times loop around (e.g. 23:00 -> 01:00), turn might be calculated as negative or large?
         // simple TimeUtils.minutesBetween implies same day if we just use LocalTime.
         // if f2.dep < f1.arr, it's next day.
         if (f2.getDepTime().isBefore(f1.getArrTime())) {
-            if (!allowOvernight)
+            if (!allowOvernight) {
                 return false;
+            }
         }
         return true;
     }
 
     private double calculateDutyTime(List<Flight> path) {
 
-        if (path.isEmpty())
+        if (path.isEmpty()) {
             return 0;
+        }
 
         LocalTime start = path.get(0).getDepTime();
         LocalTime end = path.get(path.size() - 1).getArrTime();
@@ -156,16 +163,19 @@ public class PricingProblem {
         for (Flight f : path) {
             cost += f.getFlightCost();
             flyingTime += f.getDurationHours();
-            if (f.isNight())
+            
+            if (f.isNight()){
                 hasNight = true;
+            }
         }
 
-        cost += fixedCost; // Fixed duty cost
+        cost += fixedCost; // fixed duty cost
         cost += (flyingTime * hourlyCost);
 
-        if (hasNight)
+        if (hasNight) {
             cost += nightPenalty;
-
+        }
+        
         // overtime
         double duty = calculateDutyTime(path);
 
@@ -181,7 +191,7 @@ public class PricingProblem {
         double dualSum = 0;
         
         for (Flight f : p.getFlights()) {
-            dualSum += duals.getOrDefault(f.getFlightId(), 0.0);
+            dualSum += duals.getOrDefault(f.getFlightId(), 0.0); //lib to get dualsum
         }
         return p.getCost() - dualSum;
     }

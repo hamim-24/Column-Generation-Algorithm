@@ -18,9 +18,8 @@ public class TimeUtils {
         return ChronoUnit.MINUTES.between(start, end);
     }
 
-    /**
-     * Calculates duration in minutes from decimal hours (e.g. 0.83 hours)
-     */
+   
+    // calculate duration in minutes from hour
     public static int hoursToMinutes(double hours) {
         
         return (int) Math.round(hours * 60);

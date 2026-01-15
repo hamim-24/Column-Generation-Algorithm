@@ -1,5 +1,6 @@
 package model;
 
+import util.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,11 @@ public class Pairing {
 
     @Override
     public String toString() {
+        if (cost == utils.UN_REALISTIC_VALUE) {
+            return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("->"))
+                + " ($" + cost + ")" + "(Unrealistic value)";
+        }
+
         return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("->"))
                 + " ($" + cost + ")";
     }

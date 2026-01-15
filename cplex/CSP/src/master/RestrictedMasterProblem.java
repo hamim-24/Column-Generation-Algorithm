@@ -4,6 +4,7 @@ import ilog.concert.*;
 import ilog.cplex.*;
 import model.Flight;
 import model.Pairing;
+import util.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ public class RestrictedMasterProblem {
         for (Flight f : flights) {
             Pairing p = new Pairing();
             p.addFlight(f);
-            p.setCost(1000000); //unrealistic column
+            p.setCost(utils.UN_REALISTIC_VALUE); //unrealistic column
             addColumn(p);
         }
     }

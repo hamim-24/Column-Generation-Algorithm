@@ -20,10 +20,10 @@ public class InputParser {
 
             while ((line = br.readLine()) != null) {
 
-                if (line.trim().isEmpty() || line.startsWith("---") || line.startsWith("inputId")) {
-                    continue; // Skip empty lines, separators, or headers if not standard
+                if (line.trim().isEmpty() || line.startsWith("---")) {
+                    continue; // skip empty lines, separators, or headers if not standard
                 }
-                // Specifically handling the header from the prompt example
+                //handling the header from the csv file
                 if (firstLine && line.toLowerCase().startsWith("flightid")) {
                     firstLine = false;
                     continue;
@@ -31,9 +31,11 @@ public class InputParser {
 
                 String[] parts = line.split(",");
                 
-                if (parts.length < 10)
+                if (parts.length < 10) {
                     continue;
+                }
 
+                //   0       1    2    3      4        5         6      7    8           9
                 // FlightID,From,To,DepTime,ArrTime,Duration,Aircraft,Base,FlightCost,Night
                 String id = parts[0].trim();
                 String from = parts[1].trim();

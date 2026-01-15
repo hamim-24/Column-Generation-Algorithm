@@ -37,6 +37,7 @@ public class Main {
                     System.out.println("Found at " + filePath);
                 } else {
                     System.out.println(filePath + " doesn't exist. Please fix the file path.");
+                    scanner.close();
                     return;
                 }
             }
@@ -55,6 +56,7 @@ public class Main {
             if (base.isEmpty()) {
                 if (flights.isEmpty()) {
                     System.err.println("Error: No flights loaded, cannot set default base.");
+                    scanner.close();
                     return;
                 }
                 base = defaultBase;
@@ -108,6 +110,7 @@ public class Main {
             String maxColsStr = scanner.nextLine().trim();
             int maxCols = maxColsStr.isEmpty() ? 50 : Integer.parseInt(maxColsStr);
 
+            scanner.close();
             // initialization
             PricingProblem pricing = new PricingProblem(flights, base, maxDuty, maxFly, minTurn, allowOvernight,
                     fixedCost, hourlyCost, nightPenalty, overPenalty);
