@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ColumnGenerationSolver {
-
+public class ColumnGenerationSolver 
+{
     private List<Flight> flights;
     private PricingProblem pricingProblem;
     private RestrictedMasterProblem masterProblem;
@@ -24,7 +24,8 @@ public class ColumnGenerationSolver {
     private long startTime;
     private long endTime;
 
-    public ColumnGenerationSolver(List<Flight> flights, PricingProblem pricingProblem, int maxColsPerIter) throws IloException {
+    public ColumnGenerationSolver(List<Flight> flights, PricingProblem pricingProblem, int maxColsPerIter) throws IloException 
+    {
 
         this.flights = flights;
         this.pricingProblem = pricingProblem;
@@ -32,8 +33,8 @@ public class ColumnGenerationSolver {
         this.maxColsPerIter = maxColsPerIter;
     }
 
-    public void solve() throws IloException {
-
+    public void solve() throws IloException 
+    {
         startTime = System.currentTimeMillis();
 
         System.out.println("\nStep 4: Column Generation Execution");
@@ -43,7 +44,8 @@ public class ColumnGenerationSolver {
         masterProblem.generateInitialSolution();
 
         boolean improvement = true;
-        while (improvement) {
+        while (improvement) 
+            {
             iterations++;
 
             // 2. solve RMP
@@ -54,7 +56,8 @@ public class ColumnGenerationSolver {
             double[] dualArray = masterProblem.getDuals();
             Map<String, Double> dualMap = new HashMap<>();
 
-            for (int i = 0; i < flights.size(); i++) {
+            for (int i = 0; i < flights.size(); i++) 
+            {
                 dualMap.put(flights.get(i).getFlightId(), dualArray[i]);
             }
 
@@ -67,22 +70,29 @@ public class ColumnGenerationSolver {
             // calculate reduced costs and collect
             List<Pairing> candidates = new ArrayList<>();
 
-            for (Pairing p : newColumns) {
+            for (Pairing p : newColumns) 
+            {
                 double rc = p.getCost();
 
-                for (Flight f : p.getFlights()) {
+                for (Flight f : p.getFlights()) 
+                {
                     rc -= dualMap.getOrDefault(f.getFlightId(), 0.0);
                 }
-                if (rc < 0) { // only negative
+                if (rc < 0) 
+                { // only negative
                     candidates.add(p);
                 }
-                if (rc < bestRedCost) bestRedCost = rc;
+                if (rc < bestRedCost) 
+                {
+                    bestRedCost = rc;
+                }
             }
 
             candidates.sort(Comparator.comparingDouble(p -> {
                 double rc = p.getCost(); // variable cost
 
-                for (Flight f : p.getFlights()) {
+                for (Flight f : p.getFlights()) 
+                {
                     // reduced cost
                     rc -= dualMap.getOrDefault(f.getFlightId(), 0.0);
                 }
@@ -90,7 +100,8 @@ public class ColumnGenerationSolver {
             }));
 
             // column adding step
-            for (int i = 0; i < Math.min(candidates.size(), maxColsPerIter); i++) {
+            for (int i = 0; i < Math.min(candidates.size(), maxColsPerIter); i++) 
+            {
                 Pairing p = candidates.get(i);
                 masterProblem.addColumn(p);
                 addedCount++;
@@ -99,7 +110,8 @@ public class ColumnGenerationSolver {
             // showing the steps
             System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n", iterations, objVal, addedCount, bestRedCost);
 
-            if (addedCount == 0) {
+            if (addedCount == 0) 
+            {
                 improvement = false;
             }
         }
@@ -107,8 +119,8 @@ public class ColumnGenerationSolver {
         endTime = System.currentTimeMillis();
     }
 
-    public void printSolution() throws IloException {
-
+    public void printSolution() throws IloException 
+    {
         System.out.println("\nSTEP 5: FINAL OUTPUT");
         System.out.println("--------------------");
         System.out.println("Total Cost: " + masterProblem.getObjectiveValue());
@@ -118,7 +130,8 @@ public class ColumnGenerationSolver {
 
         List<Pairing> solution = masterProblem.getSolution();
 
-        for (Pairing p : solution) {
+        for (Pairing p : solution) 
+        {
             System.out.println(p.toString());
         }
 

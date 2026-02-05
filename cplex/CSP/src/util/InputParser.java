@@ -7,31 +7,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputParser {
-
-    public static List<Flight> parseFlights(String filePath) throws IOException {
-
+public class InputParser 
+{
+    public static List<Flight> parseFlights(String filePath) throws IOException 
+    {
         List<Flight> flights = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) 
+        {
             String line;
             boolean firstLine = true;
 
-            while ((line = br.readLine()) != null) {
-
-                if (line.trim().isEmpty() || line.startsWith("---")) {
+            while ((line = br.readLine()) != null) 
+            {
+                if (line.trim().isEmpty() || line.startsWith("---")) 
+                {
                     continue; // skip empty lines, separators, or headers if not standard
                 }
                 //handling the header from the csv file
-                if (firstLine && line.toLowerCase().startsWith("flightid")) {
+                if (firstLine && line.toLowerCase().startsWith("flightid")) 
+                {
                     firstLine = false;
                     continue;
                 }
 
                 String[] parts = line.split(",");
                 
-                if (parts.length < 10) {
+                if (parts.length < 10) 
+                {
                     continue;
                 }
 

@@ -10,8 +10,8 @@ import java.util.List;
 import java.time.LocalTime;
 import java.util.Map;
 
-public class PricingProblem {
-
+public class PricingProblem 
+{
     private List<Flight> allFlights;
     private String base;
 
@@ -29,8 +29,8 @@ public class PricingProblem {
 
     public PricingProblem(List<Flight> allFlights, String base, double maxDutyHours, double maxFlyingHours,
                           long minTurnaroundMin, boolean allowOvernight, double fixedCost, double hourlyCost, 
-                          double nightPenalty, double overtimePenaltyPerHour) {
-        
+                          double nightPenalty, double overtimePenaltyPerHour) 
+    {    
         this.allFlights = new ArrayList<>(allFlights);
         // sort flights by departure time
         this.allFlights.sort(Comparator.comparing(Flight::getDepTime));
@@ -54,14 +54,16 @@ public class PricingProblem {
      *
      * list of generated pairings
      */
-    public List<Pairing> solve(Map<String, Double> dualMap) {
-
+    public List<Pairing> solve(Map<String, Double> dualMap) 
+    {
         List<Pairing> newColumns = new ArrayList<>();
 
         // simple DFS approach to find valid pairings
         // start from any flight departing from BASE
-        for (Flight f : allFlights) {
-            if (f.getFrom().equals(base)) {
+        for (Flight f : allFlights) 
+        {
+            if (f.getFrom().equals(base)) 
+            {
                 List<Flight> path = new ArrayList<>();
                 path.add(f);
                 dfs(f, path, f.getDurationHours(), dualMap, newColumns);
@@ -76,29 +78,34 @@ public class PricingProblem {
     // RMP uses List<Flight>, so I can map index to ID. Let's assume RMP passes a Map.
 
     private void dfs(Flight current, List<Flight> currentPath, double currentFlyingTime,
-            Map<String, Double> duals, List<Pairing> solutions) {
-
+            Map<String, Double> duals, List<Pairing> solutions) 
+    {
         // check if we can close the pairing to Base
-        if (current.getTo().equals(base)) {
+        if (current.getTo().equals(base)) 
+        {
             // crheck full duty validity & Cost
             double dutyTime = calculateDutyTime(currentPath);
 
-            if (dutyTime <= maxDutyHours) {
+            if (dutyTime <= maxDutyHours) 
+            {
                 Pairing p = createPairing(currentPath);
                 double redCost = calculateReducedCost(p, duals);
                 // negative reduced cost
-                if (redCost < -0.0001) { 
+                if (redCost < -0.0001) 
+                { 
                     solutions.add(p);
                 }
             }
         }
 
         // try to extend
-        for (Flight next : allFlights) {
-
-            if (isValidConnection(current, next)) {
+        for (Flight next : allFlights) 
+        {
+            if (isValidConnection(current, next)) 
+            {
                 // check flying time
-                if (currentFlyingTime + next.getDurationHours() <= maxFlyingHours) {
+                if (currentFlyingTime + next.getDurationHours() <= maxFlyingHours) 
+                {
                     // check duty time
                     // assuming single duty day for simplicity unless overnight allowed.
 
@@ -114,32 +121,39 @@ public class PricingProblem {
     }
 
     //check location and turnarround time
-    private boolean isValidConnection(Flight f1, Flight f2) {
+    private boolean isValidConnection(Flight f1, Flight f2) 
+    {
         // location connection f1.getTo() == f2.getFrom()
-        if (!f1.getTo().equals(f2.getFrom())) {
+        if (!f1.getTo().equals(f2.getFrom())) 
+        {
             return false;
         }
 
         // time connection
         long turn = TimeUtils.minutesBetween(f1.getArrTime(), f2.getDepTime());
-        if (turn < minTurnaroundMin) {
+        if (turn < minTurnaroundMin) 
+        {
             return false;
         }
 
         // if times loop around (e.g. 23:00 -> 01:00), turn might be calculated as negative or large?
         // simple TimeUtils.minutesBetween implies same day if we just use LocalTime.
         // if f2.dep < f1.arr, it's next day.
-        if (f2.getDepTime().isBefore(f1.getArrTime())) {
-            if (!allowOvernight) {
+        if (f2.getDepTime().isBefore(f1.getArrTime())) 
+        {
+            if (!allowOvernight) 
+            {
                 return false;
             }
         }
         return true;
     }
 
-    private double calculateDutyTime(List<Flight> path) {
+    private double calculateDutyTime(List<Flight> path) 
+    {
 
-        if (path.isEmpty()) {
+        if (path.isEmpty()) 
+        {
             return 0;
         }
 
@@ -148,23 +162,26 @@ public class PricingProblem {
 
         long mins = TimeUtils.minutesBetween(start, end);
         // Handle overnight (if end < start, add 24h)
-        if (end.isBefore(start)) {
+        if (end.isBefore(start)) 
+        {
             mins += 24 * 60;
         }
         return mins / 60.0;
     }
 
-    private Pairing createPairing(List<Flight> path) {
-
+    private Pairing createPairing(List<Flight> path) 
+    {
         double cost = 0;
         double flyingTime = 0;
         boolean hasNight = false;
 
-        for (Flight f : path) {
+        for (Flight f : path) 
+        {
             cost += f.getFlightCost();
             flyingTime += f.getDurationHours();
             
-            if (f.isNight()){
+            if (f.isNight())
+            {
                 hasNight = true;
             }
         }
@@ -172,25 +189,28 @@ public class PricingProblem {
         cost += fixedCost; // fixed duty cost
         cost += (flyingTime * hourlyCost);
 
-        if (hasNight) {
+        if (hasNight) 
+        {
             cost += nightPenalty;
         }
         
         // overtime
         double duty = calculateDutyTime(path);
 
-        if (duty > 8.0) {
+        if (duty > 8.0) 
+        {
             cost += (duty - 8.0) * overtimePenaltyPerHour;
         }
 
         return new Pairing(path, cost);
     }
 
-    private double calculateReducedCost(Pairing p, java.util.Map<String, Double> duals) {
-
+    private double calculateReducedCost(Pairing p, java.util.Map<String, Double> duals) 
+    {
         double dualSum = 0;
         
-        for (Flight f : p.getFlights()) {
+        for (Flight f : p.getFlights()) 
+        {
             dualSum += duals.getOrDefault(f.getFlightId(), 0.0); //lib to get dualsum
         }
         return p.getCost() - dualSum;

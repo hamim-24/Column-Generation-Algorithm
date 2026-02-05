@@ -5,48 +5,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Pairing {
-
+public class Pairing 
+{
     private List<Flight> flights;
     private double cost;
 
-    public Pairing() {
-
+    public Pairing() 
+    {
         this.flights = new ArrayList<>();
         this.cost = 0.0;
     }
 
-    public Pairing(List<Flight> flights, double cost) {
-        
+    public Pairing(List<Flight> flights, double cost) 
+    {
         this.flights = new ArrayList<>(flights);
         this.cost = cost;
     }
 
-    public void addFlight(Flight flight) {
+    public void addFlight(Flight flight) 
+    {
         this.flights.add(flight);
     }
 
-    public List<Flight> getFlights() {
+    public List<Flight> getFlights() 
+    {
         return flights;
     }
 
-    public double getCost() {
+    public double getCost() 
+    {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(double cost) 
+    {
         this.cost = cost;
     }
 
-    public Flight getLastFlight() {
+    public Flight getLastFlight() 
+    {
         if (flights.isEmpty())
+        {
             return null;
+        }
         return flights.get(flights.size() - 1);
     }
 
     @Override
-    public String toString() {
-        if (cost == utils.UN_REALISTIC_VALUE) {
+    public String toString() 
+    {
+        if (cost == utils.UN_REALISTIC_VALUE) 
+        {
             return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("->"))
                 + " ($" + cost + ")" + "(Unrealistic value)";
         }
@@ -54,4 +63,5 @@ public class Pairing {
         return flights.stream().map(Flight::getFlightId).collect(Collectors.joining("->"))
                 + " ($" + cost + ")";
     }
+    
 }

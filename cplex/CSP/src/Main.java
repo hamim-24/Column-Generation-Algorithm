@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-public class Main {
-    
-    public static void main(String[] args) {
-
+public class Main 
+{    
+    public static void main(String[] args) 
+    {
         Scanner scanner = new Scanner(System.in);
 
         utils.header("Crew Scheduling Problem");
@@ -25,17 +25,22 @@ public class Main {
             System.out.print(":: ");
             String filePath = scanner.nextLine().trim();
 
-            if (filePath.isEmpty()) {
+            if (filePath.isEmpty()) 
+            {
                 filePath = "data/flights.csv";
             }
 
-            if (!new File(filePath).exists()) {
+            if (!new File(filePath).exists()) 
+            {
                 System.err.println("Error: File not found at " + filePath);
                 // try relative to project root if running from bin
-                if (new File("../" + filePath).exists()) {
+                if (new File("../" + filePath).exists()) 
+                {
                     filePath = "../" + filePath;
                     System.out.println("Found at " + filePath);
-                } else {
+                } 
+                else 
+                {
                     System.out.println(filePath + " doesn't exist. Please fix the file path.");
                     scanner.close();
                     return;
@@ -53,8 +58,10 @@ public class Main {
             System.out.print(":: ");
             String base = scanner.nextLine().trim();
             
-            if (base.isEmpty()) {
-                if (flights.isEmpty()) {
+            if (base.isEmpty()) 
+            {
+                if (flights.isEmpty()) 
+                {
                     System.err.println("Error: No flights loaded, cannot set default base.");
                     scanner.close();
                     return;
@@ -120,12 +127,18 @@ public class Main {
             solver.solve();
             solver.printSolution();
 
-        } catch (IOException e) {
+        } 
+        catch (IOException e) 
+        {
             System.err.println("IO Error: " + e.getMessage());
-        } catch (IloException e) {
+        } 
+        catch (IloException e) 
+        {
             System.err.println("CPLEX Error: " + e.getMessage());
             e.printStackTrace();
-        } catch (Exception e) {
+        } 
+        catch (Exception e) 
+        {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         }

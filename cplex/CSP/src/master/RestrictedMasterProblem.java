@@ -19,8 +19,8 @@ public class RestrictedMasterProblem {
     private Map<Flight, IloRange> constraints;
     private Map<Pairing, IloNumVar> variables;
 
-    public RestrictedMasterProblem(List<Flight> flights) throws IloException {
-
+    public RestrictedMasterProblem(List<Flight> flights) throws IloException 
+    {
         this.flights = flights;
         this.columns = new ArrayList<>();
         this.constraints = new HashMap<>();
@@ -32,27 +32,30 @@ public class RestrictedMasterProblem {
         buildModel();
     }
 
-    private void buildModel() throws IloException {
+    private void buildModel() throws IloException 
+    {
         // minimize Total Cost
         cplex.addMinimize();
 
         // add constraints: Each flight covered exactly once
 
-        for (Flight f : flights) {
+        for (Flight f : flights) 
+        {
             IloLinearNumExpr expr = cplex.linearNumExpr();
             IloRange constraint = cplex.addEq(expr, 1.0, "Cover_" + f.getFlightId());
             constraints.put(f, constraint);
         }
     }
 
-    public void addColumn(Pairing pairing) throws IloException {
-
+    public void addColumn(Pairing pairing) throws IloException 
+    {
         columns.add(pairing);
-
         IloColumn col = cplex.column(cplex.getObjective(), pairing.getCost());
 
-        for (Flight f : pairing.getFlights()) {
-            if (constraints.containsKey(f)) {
+        for (Flight f : pairing.getFlights()) 
+        {
+            if (constraints.containsKey(f)) 
+                {
                 col = col.and(cplex.column(constraints.get(f), 1.0));
             }
         }
@@ -61,34 +64,36 @@ public class RestrictedMasterProblem {
         variables.put(pairing, var);
     }
 
-    public void solve() throws IloException {
-
+    public void solve() throws IloException 
+    {
         cplex.solve();
     }
 
-    public double[] getDuals() throws IloException {
-
+    public double[] getDuals() throws IloException 
+    {
         double[] duals = new double[flights.size()];
 
-        for (int i = 0; i < flights.size(); i++) {
+        for (int i = 0; i < flights.size(); i++) 
+        {
             duals[i] = cplex.getDual(constraints.get(flights.get(i)));
         }
         return duals;
     }
 
-    public double getObjectiveValue() throws IloException {
-
+    public double getObjectiveValue() throws IloException 
+    {
         return cplex.getObjValue();
     }
 
-    public void close() {
-
+    public void close() 
+    {
         cplex.end();
     }
 
-    public void generateInitialSolution() throws IloException {
-
-        for (Flight f : flights) {
+    public void generateInitialSolution() throws IloException 
+    {
+        for (Flight f : flights) 
+        {
             Pairing p = new Pairing();
             p.addFlight(f);
             p.setCost(utils.UN_REALISTIC_VALUE); //unrealistic column
@@ -96,13 +101,15 @@ public class RestrictedMasterProblem {
         }
     }
 
-    public List<Pairing> getSolution() throws IloException {
-
+    public List<Pairing> getSolution() throws IloException 
+    {
         List<Pairing> selected = new ArrayList<>();
         
-        for (Pairing p : columns) {
+        for (Pairing p : columns) 
+        {
             double val = cplex.getValue(variables.get(p));
-            if (val > 0.0001) {
+            if (val > 0.0001) 
+            {
                 selected.add(p);
             }
         }
