@@ -45,7 +45,7 @@ public class ColumnGenerationSolver
 
         boolean improvement = true;
         while (improvement) 
-            {
+        {
             iterations++;
 
             // 2. solve RMP

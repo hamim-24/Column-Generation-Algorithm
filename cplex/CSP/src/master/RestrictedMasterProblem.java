@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RestrictedMasterProblem {
-
+public class RestrictedMasterProblem 
+{
     private IloCplex cplex;
     private List<Flight> flights;
     private List<Pairing> columns;
