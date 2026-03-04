@@ -20,7 +20,7 @@ public class Main
         
         try {
             // load file
-            System.out.println("\n===  Step 1: Load Flight File  ===");
+            System.out.println("\n===  Step 1: LOAD DATA FILE  ===");
             System.out.println("Enter path to flight schedule file (default path: data/flights.csv)");
             System.out.print(":: ");
             String filePath = scanner.nextLine().trim();

@@ -27,6 +27,10 @@ public class ColumnGenerationSolver {
     }
 
     public void solve() throws IloException {
+
+        System.out.println("\nStep 4: Column Generation Execution");
+        System.out.println("-----------------------------------");
+
         // 1. Generate initial feasible routes (single-customer routes)
         for (int i = 1; i <= numCustomers; i++) {
             List<Integer> path = new ArrayList<>();

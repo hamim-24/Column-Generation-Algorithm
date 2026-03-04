@@ -121,8 +121,7 @@ public class ColumnGenerationSolver
 
     public void printSolution() throws IloException 
     {
-        System.out.println("\nSTEP 5: FINAL OUTPUT");
-        System.out.println("--------------------");
+        System.out.println("\n----------------FINAL SOLUTION----------------");
         System.out.println("Total Cost: " + masterProblem.getObjectiveValue());
         System.out.println("Execution Time: " + (endTime - startTime) + " ms");
         System.out.println("Iterations: " + iterations);

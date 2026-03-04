@@ -16,11 +16,11 @@ public class Main
     {
         Scanner scanner = new Scanner(System.in);
 
-        utils.header("Crew Scheduling Problem");
+        utils.header("Vehicle Routing Problem");
 
         try {
-            System.out.println("=== STEP 1: LOAD DATA FILE ===");
-            System.out.print("Enter path to customer file [default: data/customers.csv]");
+            System.out.println("\n=== STEP 1: LOAD DATA FILE ===");
+            System.out.println("Enter path to customer file [default: data/customers.csv]");
             System.out.print(":: ");
             String customerFile = scanner.nextLine().trim();
 
@@ -45,8 +45,12 @@ public class Main
                     return;
                 }
             }
+            Map<Integer, Customer> customers = InputParser.parseCustomers(customerFile);
+            int numNodes = customers.size() + 1; // including depot (0)
+            System.out.println("Loaded " + customers.size() + " customers.");
 
-            System.out.print("Enter path to distance matrix file [default: data/distances.csv]: > ");
+            System.out.println("Enter path to distance matrix file [default: data/distances.csv]");
+            System.out.print(":: ");
             String distanceFile = scanner.nextLine();
 
             if (distanceFile.isEmpty())
@@ -70,44 +74,41 @@ public class Main
                     return;
                 }
             }
-            
-            Map<Integer, Customer> customers = InputParser.parseCustomers(customerFile);
-            int numNodes = customers.size() + 1; // including depot (0)
             double[][] distances = InputParser.parseDistances(distanceFile, numNodes);
+            System.out.println("Loaded " + distances.length + " routes.");
 
             System.out.println("\n=== STEP 2: OPERATIONAL CONSTRAINTS ===");
-            System.out.print("Vehicle capacity [default: 50.0]");
+            System.out.println("Vehicle capacity [default: 50.0]");
             System.out.print(":: ");
             String capStr = scanner.nextLine();
             double capacity = capStr.isEmpty() ? 50.0 : Double.parseDouble(capStr);
 
-            System.out.print("Maximum route duration (hours, optional)");
+            System.out.println("Maximum route duration (hours, optional)");
             System.out.print(":: ");
             String durStr = scanner.nextLine();
             double maxDuration = durStr.isEmpty() ? -1 : Double.parseDouble(durStr);
 
-            System.out.print("Maximum number of vehicles");
+            System.out.println("Maximum number of vehicles");
             System.out.print(":: ");
             String vehStr = scanner.nextLine();
             double maxVehICLES = vehStr.isEmpty() ? -1 : Double.parseDouble(vehStr);
 
-            System.out.println("\nSTEP 3: COST PARAMETERS");
-            System.out.print("Cost per distance unit [default: 1.0]");
+            System.out.println("\n=== STEP 3: COST PARAMETERS ===");
+            System.out.println("Cost per distance unit [default: 1.0]");
             System.out.print(":: ");
             String cpdStr = scanner.nextLine();
             double costPerDist = cpdStr.isEmpty() ? 1.0 : Double.parseDouble(cpdStr);
 
-            System.out.print("Fixed cost per vehicle [default: 100.0]");
+            System.out.println("Fixed cost per vehicle [default: 100.0]");
             System.out.print(":: ");
             String fcStr = scanner.nextLine();
             double fixedCost = fcStr.isEmpty() ? 100.0 : Double.parseDouble(fcStr);
 
-            System.out.print("Penalty for overtime per hour [default: 10.0]");
+            System.out.println("Penalty for overtime per hour [default: 10.0]");
             System.out.print(":: ");
             String pfoStr = scanner.nextLine();
             double overtimePenalty = pfoStr.isEmpty() ? 10.0 : Double.parseDouble(pfoStr);
 
-            System.out.println("\n=== STEP 4: COLUMN GENERATION EXECUTION ===");
             long startTime = System.currentTimeMillis();
 
             PricingProblem pricing = new PricingProblem(numNodes, customers, distances,
