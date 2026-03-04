@@ -18,7 +18,7 @@ public class Main
 
         utils.header("Crew Scheduling Problem");
         
-        try{
+        try {
             // load file
             System.out.println("\n===  Step 1: Load Flight File  ===");
             System.out.println("Enter path to flight schedule file (default path: data/flights.csv)");
@@ -141,6 +141,10 @@ public class Main
         {
             System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
+        }
+        finally
+        {
+            scanner.close();
         }
     }
 }

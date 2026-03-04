@@ -3,60 +3,111 @@ import ilog.concert.IloException;
 import model.Customer;
 import pricing.PricingProblem;
 import util.InputParser;
+import util.utils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main {
-    public static void main(String[] args) {
+public class Main 
+{
+    public static void main(String[] args) 
+    {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Vehicle Routing using Column Generation Solver: IBM ILOG CPLEX (Java)");
-        System.out.println("------------------------------------------------------------------");
+        utils.header("Crew Scheduling Problem");
 
         try {
-            System.out.println("STEP 1: LOAD DATA FILE");
-            System.out.print("Enter path to customer file [default: data/customers.csv]: > ");
-            String customerFile = scanner.nextLine();
+            System.out.println("=== STEP 1: LOAD DATA FILE ===");
+            System.out.print("Enter path to customer file [default: data/customers.csv]");
+            System.out.print(":: ");
+            String customerFile = scanner.nextLine().trim();
+
             if (customerFile.isEmpty())
+            {
                 customerFile = "data/customers.csv";
+            }
+
+            if (!new File(customerFile).exists()) 
+            {
+                System.err.println("Error: File not found at " + customerFile);
+                // try relative to project root if running from bin
+                if (new File("../" + customerFile).exists()) 
+                {
+                    customerFile = "../" + customerFile;
+                    System.out.println("Found at " + customerFile);
+                } 
+                else 
+                {
+                    System.out.println(customerFile + " doesn't exist. Please fix the file path.");
+                    scanner.close();
+                    return;
+                }
+            }
 
             System.out.print("Enter path to distance matrix file [default: data/distances.csv]: > ");
             String distanceFile = scanner.nextLine();
-            if (distanceFile.isEmpty())
-                distanceFile = "data/distances.csv";
 
+            if (distanceFile.isEmpty())
+            {
+                distanceFile = "data/distances.csv";
+            }
+
+            if (!new File(distanceFile).exists()) 
+            {
+                System.err.println("Error: File not found at " + distanceFile);
+                // try relative to project root if running from bin
+                if (new File("../" + distanceFile).exists()) 
+                {
+                    distanceFile = "../" + distanceFile;
+                    System.out.println("Found at " + distanceFile);
+                } 
+                else 
+                {
+                    System.out.println(distanceFile + " doesn't exist. Please fix the file path.");
+                    scanner.close();
+                    return;
+                }
+            }
+            
             Map<Integer, Customer> customers = InputParser.parseCustomers(customerFile);
             int numNodes = customers.size() + 1; // including depot (0)
             double[][] distances = InputParser.parseDistances(distanceFile, numNodes);
 
-            System.out.println("\nSTEP 2: OPERATIONAL CONSTRAINTS");
-            System.out.print("Vehicle capacity [default: 50.0]: > ");
+            System.out.println("\n=== STEP 2: OPERATIONAL CONSTRAINTS ===");
+            System.out.print("Vehicle capacity [default: 50.0]");
+            System.out.print(":: ");
             String capStr = scanner.nextLine();
             double capacity = capStr.isEmpty() ? 50.0 : Double.parseDouble(capStr);
 
-            System.out.print("Maximum route duration (hours, optional): > ");
+            System.out.print("Maximum route duration (hours, optional)");
+            System.out.print(":: ");
             String durStr = scanner.nextLine();
             double maxDuration = durStr.isEmpty() ? -1 : Double.parseDouble(durStr);
 
-            System.out.print("Maximum number of vehicles: > ");
+            System.out.print("Maximum number of vehicles");
+            System.out.print(":: ");
             String vehStr = scanner.nextLine();
             double maxVehICLES = vehStr.isEmpty() ? -1 : Double.parseDouble(vehStr);
 
             System.out.println("\nSTEP 3: COST PARAMETERS");
-            System.out.print("Cost per distance unit [default: 1.0]: > ");
+            System.out.print("Cost per distance unit [default: 1.0]");
+            System.out.print(":: ");
             String cpdStr = scanner.nextLine();
             double costPerDist = cpdStr.isEmpty() ? 1.0 : Double.parseDouble(cpdStr);
 
-            System.out.print("Fixed cost per vehicle [default: 100.0]: > ");
+            System.out.print("Fixed cost per vehicle [default: 100.0]");
+            System.out.print(":: ");
             String fcStr = scanner.nextLine();
             double fixedCost = fcStr.isEmpty() ? 100.0 : Double.parseDouble(fcStr);
 
-            System.out.print("Penalty for overtime per hour [default: 10.0]: > ");
+            System.out.print("Penalty for overtime per hour [default: 10.0]");
+            System.out.print(":: ");
             String pfoStr = scanner.nextLine();
             double overtimePenalty = pfoStr.isEmpty() ? 10.0 : Double.parseDouble(pfoStr);
 
-            System.out.println("\nSTEP 4: COLUMN GENERATION EXECUTION");
+            System.out.println("\n=== STEP 4: COLUMN GENERATION EXECUTION ===");
             long startTime = System.currentTimeMillis();
 
             PricingProblem pricing = new PricingProblem(numNodes, customers, distances,
@@ -70,9 +121,20 @@ public class Main {
             long endTime = System.currentTimeMillis();
             System.out.println("Execution time: " + (endTime - startTime) + " ms");
 
-        } catch (Exception e) {
+        } 
+        catch (IOException e) 
+        {
+            System.err.println("IO Error: " + e.getMessage());
+        } 
+        catch (IloException e) 
+        {
+            System.err.println("CPLEX Error: " + e.getMessage());
             e.printStackTrace();
-        } finally {
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        } 
+        finally {
             scanner.close();
         }
     }
