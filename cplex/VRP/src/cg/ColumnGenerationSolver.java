@@ -46,7 +46,7 @@ public class ColumnGenerationSolver {
         while (true) {
             // 2. Solve RMP
             if (!rmp.solve()) {
-                System.out.println("RMP Infeasible!");
+                // System.out.println("RMP Infeasible!");
                 break;
             }
 
@@ -64,7 +64,7 @@ public class ColumnGenerationSolver {
 
             // 5. Add columns
             if (newRoutes.isEmpty()) {
-                System.out.println("No more improving columns found. Optimal LP solution reached.");
+                // System.out.println("No more improving columns found. Optimal LP solution reached.");
                 break;
             }
 
@@ -77,7 +77,7 @@ public class ColumnGenerationSolver {
         }
 
         // 6. Solve final Integer Master Problem
-        System.out.println("Solving Final Integer Formulation...");
+        // System.out.println("Solving Final Integer Formulation...");
         rmp.convertToIntegerAndSolve();
 
         System.out.println("\n----------------FINAL SOLUTION----------------");

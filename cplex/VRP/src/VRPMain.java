@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main 
+public class VRPMain 
 {
     public static void main(String[] args) 
     {
