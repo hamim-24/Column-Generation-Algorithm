@@ -107,7 +107,7 @@ public class RestrictedMasterProblem
         {
             cplex.add(cplex.conversion(var, ilog.concert.IloNumVarType.Int));
         }
-        cplex.setOut(System.out); // Show final solve output
+        // cplex.setOut(System.out); // Show final solve output
         cplex.solve();
     }
 

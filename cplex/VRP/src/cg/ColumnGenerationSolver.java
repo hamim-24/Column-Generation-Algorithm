@@ -29,10 +29,6 @@ public class ColumnGenerationSolver
 
     public void solve() throws IloException
     {
-
-        System.out.println("\nStep 4: Column Generation Execution");
-        System.out.println("-----------------------------------");
-
         // 1. Generate initial feasible routes (single-customer routes)
         for (int i = 1; i <= numCustomers; i++)
         {
@@ -64,7 +60,8 @@ public class ColumnGenerationSolver
             // 4. Solve pricing problem
             List<Route> newRoutes = pricing.findNegativeReducedCostRoutes(dualPrices, vehicleDual);
 
-            System.out.println("Iteration " + iteration + " | Objective: " + rmpObj + " | New columns: " + newRoutes.size());
+            // System.out.println("Iteration " + iteration + " | Objective: " + rmpObj + " | New columns: " + newRoutes.size());
+            System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n", iteration, rmpObj, newRoutes.size(), bestRedCost);
 
             // 5. Add columns
             if (newRoutes.isEmpty())
@@ -81,8 +78,10 @@ public class ColumnGenerationSolver
 
             iteration++;
         }
-
+    }
         // 6. Solve final Integer Master Problem
+    public void printSolution() throws IloException 
+    {
         // System.out.println("Solving Final Integer Formulation...");
         rmp.convertToIntegerAndSolve();
 

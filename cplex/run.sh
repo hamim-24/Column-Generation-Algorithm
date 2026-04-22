@@ -52,9 +52,9 @@ else
     while true; do
         echo ""
         echo "=== Column Generation Project Menu ==="
-        echo "1) CSP"
-        echo "2) VRP"
-        echo "3) Exit"
+        echo "  1) CSP"
+        echo "  2) VRP"
+        echo "  3) Exit"
         echo -n "Enter choice: "
         read choice
         case $choice in

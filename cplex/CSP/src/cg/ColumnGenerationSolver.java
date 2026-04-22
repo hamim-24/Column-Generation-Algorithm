@@ -37,9 +37,6 @@ public class ColumnGenerationSolver
     {
         startTime = System.currentTimeMillis();
 
-        System.out.println("\nStep 4: Column Generation Execution");
-        System.out.println("-----------------------------------");
-
         // 1. init RMP
         masterProblem.generateInitialSolution();
 
