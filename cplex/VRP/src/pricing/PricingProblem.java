@@ -5,7 +5,8 @@ import model.Route;
 
 import java.util.*;
 
-public class PricingProblem {
+public class PricingProblem
+{
     private int numNodes; // including depot (0)
     private Map<Integer, Customer> customers;
     private double[][] distances;
@@ -15,9 +16,8 @@ public class PricingProblem {
     private double fixedCost;
     private double overtimePenalty;
 
-    public PricingProblem(int numNodes, Map<Integer, Customer> customers, double[][] distances,
-            double capacity, double maxDuration, double costPerDist,
-            double fixedCost, double overtimePenalty) {
+    public PricingProblem(int numNodes, Map<Integer, Customer> customers, double[][] distances, double capacity, double maxDuration, double costPerDist, double fixedCost, double overtimePenalty)
+    {
         this.numNodes = numNodes;
         this.customers = customers;
         this.distances = distances;
@@ -29,11 +29,13 @@ public class PricingProblem {
     }
 
     // A simple label correcting / Depth First Search approach for ESPPRC
-    public List<Route> findNegativeReducedCostRoutes(double[] duals, double vehicleDual) {
+    public List<Route> findNegativeReducedCostRoutes(double[] duals, double vehicleDual)
+    {
         List<Route> routes = new ArrayList<>();
 
         // DP Label: (currentNode, visited, load, duration, cost, reducedCost, path)
-        class Label {
+        class Label
+        {
             int node;
             Set<Integer> visited;
             double load;
@@ -42,8 +44,8 @@ public class PricingProblem {
             double reducedCost;
             List<Integer> path;
 
-            Label(int node, Set<Integer> visited, double load, double duration, double cost, double reducedCost,
-                    List<Integer> path) {
+            Label(int node, Set<Integer> visited, double load, double duration, double cost, double reducedCost, List<Integer> path)
+            {
                 this.node = node;
                 this.visited = new HashSet<>(visited);
                 this.load = load;
@@ -55,28 +57,32 @@ public class PricingProblem {
         }
 
         Queue<Label> queue = new LinkedList<>();
-        queue.add(new Label(0, new HashSet<>(), 0.0, 0.0, fixedCost, fixedCost - vehicleDual,
-                Collections.singletonList(0)));
+        queue.add(new Label(0, new HashSet<>(), 0.0, 0.0, fixedCost, fixedCost - vehicleDual, Collections.singletonList(0)));
 
         double bestReducedCost = -1e-6; // Only interested in negative reduced costs
 
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty())
+        {
             Label curr = queue.poll();
 
-            for (int next = 0; next < numNodes; next++) {
+            for (int next = 0; next < numNodes; next++)
+            {
                 if (next == curr.node)
                     continue;
-                if (next == 0) {
+                if (next == 0)
+                {
                     // Return to depot
                     double addedCost = distances[curr.node][0] * costPerDist;
                     double finalCost = curr.cost + addedCost;
                     double finalDuration = curr.duration + distances[curr.node][0];
-                    if (maxDuration > 0 && finalDuration > maxDuration) {
+                    if (maxDuration > 0 && finalDuration > maxDuration)
+                    {
                         finalCost += (finalDuration - maxDuration) * overtimePenalty;
                     }
                     double finalRc = curr.reducedCost + addedCost; // Duals only apply to customers
 
-                    if (finalRc < bestReducedCost) {
+                    if (finalRc < bestReducedCost)
+                    {
                         List<Integer> finalPath = new ArrayList<>(curr.path);
                         finalPath.add(0);
 
@@ -91,7 +97,9 @@ public class PricingProblem {
                         routes.add(new Route(custPath, finalCost, curr.load, finalDuration));
                         bestReducedCost = finalRc; // keep searching for even better
                     }
-                } else {
+                }
+                else
+                {
                     // Visit next customer
                     if (curr.visited.contains(next))
                         continue;

@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ColumnGenerationSolver {
+public class ColumnGenerationSolver
+{
     private RestrictedMasterProblem rmp;
     private PricingProblem pricing;
     private Map<Integer, Customer> customers;
     private int numCustomers;
     private List<Route> allRoutes;
 
-    public ColumnGenerationSolver(int numCustomers, double maxVehicles, Map<Integer, Customer> customers,
-            PricingProblem pricing) throws IloException {
+    public ColumnGenerationSolver(int numCustomers, double maxVehicles, Map<Integer, Customer> customers, PricingProblem pricing) throws IloException
+    {
         this.numCustomers = numCustomers;
         this.customers = customers;
         this.pricing = pricing;
@@ -26,13 +27,15 @@ public class ColumnGenerationSolver {
         this.allRoutes = new ArrayList<>();
     }
 
-    public void solve() throws IloException {
+    public void solve() throws IloException
+    {
 
         System.out.println("\nStep 4: Column Generation Execution");
         System.out.println("-----------------------------------");
 
         // 1. Generate initial feasible routes (single-customer routes)
-        for (int i = 1; i <= numCustomers; i++) {
+        for (int i = 1; i <= numCustomers; i++)
+        {
             List<Integer> path = new ArrayList<>();
             path.add(i);
 
@@ -43,9 +46,11 @@ public class ColumnGenerationSolver {
         }
 
         int iteration = 1;
-        while (true) {
+        while (true)
+        {
             // 2. Solve RMP
-            if (!rmp.solve()) {
+            if (!rmp.solve())
+            {
                 // System.out.println("RMP Infeasible!");
                 break;
             }
@@ -59,16 +64,17 @@ public class ColumnGenerationSolver {
             // 4. Solve pricing problem
             List<Route> newRoutes = pricing.findNegativeReducedCostRoutes(dualPrices, vehicleDual);
 
-            System.out.println(
-                    "Iteration " + iteration + " | Objective: " + rmpObj + " | New columns: " + newRoutes.size());
+            System.out.println("Iteration " + iteration + " | Objective: " + rmpObj + " | New columns: " + newRoutes.size());
 
             // 5. Add columns
-            if (newRoutes.isEmpty()) {
+            if (newRoutes.isEmpty())
+            {
                 // System.out.println("No more improving columns found. Optimal LP solution reached.");
                 break;
             }
 
-            for (Route r : newRoutes) {
+            for (Route r : newRoutes)
+            {
                 rmp.addRoute(r);
                 allRoutes.add(r);
             }
@@ -85,7 +91,8 @@ public class ColumnGenerationSolver {
 
         List<Integer> selectedIndices = rmp.getSelectedRoutesIndices();
         System.out.println("Selected Routes:");
-        for (int idx : selectedIndices) {
+        for (int idx : selectedIndices)
+        {
             System.out.println(allRoutes.get(idx));
         }
 
