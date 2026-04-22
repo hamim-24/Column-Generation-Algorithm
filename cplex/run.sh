@@ -62,12 +62,14 @@ else
                 echo "Launching CSP..."
                 cd CSP || exit 1
                 java --enable-native-access=ALL-UNNAMED -cp "../bin/csp:$CPLEX_JAR" -Djava.library.path="$CPLEX_LIB_PATH" CSPMain
+                cd ..
                 # exit 0
                 ;;
             2)
                 echo "Launching VRP..."
                 cd VRP || exit 1
                 java --enable-native-access=ALL-UNNAMED -cp "../bin/vrp:$CPLEX_JAR" -Djava.library.path="$CPLEX_LIB_PATH" VRPMain
+                cd ..
                 # exit 0
                 ;;
             3)
