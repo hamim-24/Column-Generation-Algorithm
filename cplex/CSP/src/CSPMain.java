@@ -112,16 +112,15 @@ public class CSPMain
                 String overStr = scanner.nextLine().trim();
                 double overPenalty = overStr.isEmpty() ? 120.0 : Double.parseDouble(overStr);
 
-                System.out.println("Max columns(flights) per iteration (default: 50)");
+                System.out.println("Max columns(flights) per iteration (default: 10)");
                 System.out.print(":: ");
                 String maxColsStr = scanner.nextLine().trim();
-                int maxCols = maxColsStr.isEmpty() ? 50 : Integer.parseInt(maxColsStr);
+                int maxCols = maxColsStr.isEmpty() ? 10 : Integer.parseInt(maxColsStr);
 
                 utils.subHeader("Step 4: Column Generation Execution");
 
                 // initialization
-                PricingProblem pricing = new PricingProblem(flights, base, maxDuty, maxFly, minTurn, allowOvernight,
-                        fixedCost, hourlyCost, nightPenalty, overPenalty);
+                PricingProblem pricing = new PricingProblem(flights, base, maxDuty, maxFly, minTurn, allowOvernight, fixedCost, hourlyCost, nightPenalty, overPenalty);
 
                 ColumnGenerationSolver solver = new ColumnGenerationSolver(flights, pricing, maxCols);
 

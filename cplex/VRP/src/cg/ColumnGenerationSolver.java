@@ -60,7 +60,9 @@ public class ColumnGenerationSolver
             // 4. Solve pricing problem
             List<Route> newRoutes = pricing.findNegativeReducedCostRoutes(dualPrices, vehicleDual);
 
-            // System.out.println("Iteration " + iteration + " | Objective: " + rmpObj + " | New columns: " + newRoutes.size());
+            // Get best reduced cost from pricing problem
+            double bestRedCost = pricing.getBestReducedCost();
+
             System.out.printf("Iter %d: Obj = %.2f | Cols Added = %d | Best RedCost = %.2f%n", iteration, rmpObj, newRoutes.size(), bestRedCost);
 
             // 5. Add columns

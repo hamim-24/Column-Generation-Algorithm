@@ -15,6 +15,7 @@ public class PricingProblem
     private double costPerDist;
     private double fixedCost;
     private double overtimePenalty;
+    private double bestReducedCost; // Track best reduced cost from last solve
 
     public PricingProblem(int numNodes, Map<Integer, Customer> customers, double[][] distances, double capacity, double maxDuration, double costPerDist, double fixedCost, double overtimePenalty)
     {
@@ -59,7 +60,7 @@ public class PricingProblem
         Queue<Label> queue = new LinkedList<>();
         queue.add(new Label(0, new HashSet<>(), 0.0, 0.0, fixedCost, fixedCost - vehicleDual, Collections.singletonList(0)));
 
-        double bestReducedCost = -1e-6; // Only interested in negative reduced costs
+        bestReducedCost = -1e-6; // Only interested in negative reduced costs
 
         while (!queue.isEmpty())
         {
@@ -127,5 +128,10 @@ public class PricingProblem
         // Sort to return the most negative reduced cost routes first
         routes.sort(Comparator.comparingDouble(r -> r.cost));
         return routes;
+    }
+
+    public double getBestReducedCost()
+    {
+        return bestReducedCost;
     }
 }
