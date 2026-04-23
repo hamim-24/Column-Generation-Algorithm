@@ -34,10 +34,10 @@ public class RestrictedMasterProblem
 
     private void buildModel() throws IloException 
     {
-        // minimize Total Cost
+        // minimize total cost
         cplex.addMinimize();
 
-        // add constraints: Each flight covered exactly once
+        // add constraints: each flight covered exactly once
 
         for (Flight f : flights) 
         {
@@ -55,7 +55,7 @@ public class RestrictedMasterProblem
         for (Flight f : pairing.getFlights()) 
         {
             if (constraints.containsKey(f)) 
-                {
+            {
                 col = col.and(cplex.column(constraints.get(f), 1.0));
             }
         }

@@ -2,7 +2,7 @@ package util;
 
 public class utils 
 {
-    public static final int UN_REALISTIC_VALUE = 1000000;
+    public static final int UN_REALISTIC_VALUE = 100000000;
 
     public static void header(String str) 
     {
