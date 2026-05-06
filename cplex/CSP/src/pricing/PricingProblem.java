@@ -47,19 +47,10 @@ public class PricingProblem
         this.overtimePenaltyPerHour = overtimePenaltyPerHour;
     }
 
-    /*
-     * solves the RCSP(Resource Constrained Shortest Path) to find pairings with negative reduced cost.
-     * 
-     * dual values from RMP(Restricted Master Problem), indexed corresponding to allFlights list (or map)
-     *
-     * list of generated pairings
-     */
     public List<Pairing> solve(Map<String, Double> dualMap) 
     {
         List<Pairing> newColumns = new ArrayList<>();
 
-        // simple DFS approach to find valid pairings
-        // start from any flight departing from BASE
         for (Flight f : allFlights) 
         {
             if (f.getFrom().equals(base)) 
@@ -72,10 +63,6 @@ public class PricingProblem
 
         return newColumns;
     }
-
-    // we need duals by Flight ID probably, or index. Map<flight_ID, duals> dualMap
-    // overloading to match what I wrote above (which might mismatch RMP if RMP uses index)
-    // RMP uses List<Flight>, so I can map index to ID. Let's assume RMP passes a Map.
 
     private void dfs(Flight current, List<Flight> currentPath, double currentFlyingTime,
             Map<String, Double> duals, List<Pairing> solutions) 
@@ -106,12 +93,6 @@ public class PricingProblem
                 // check flying time
                 if (currentFlyingTime + next.getDurationHours() <= maxFlyingHours) 
                 {
-                    // check duty time
-                    // assuming single duty day for simplicity unless overnight allowed.
-
-                    // if overnight not allowed, next flight must be same day (dep > arr)
-                    // TimeUtils handles times. If next.dep < current.arr, it implies next day (or impossible same day).
-
                     currentPath.add(next);
                     dfs(next, currentPath, currentFlyingTime + next.getDurationHours(), duals, solutions);
                     currentPath.remove(currentPath.size() - 1);
@@ -136,9 +117,6 @@ public class PricingProblem
             return false;
         }
 
-        // if times loop around (e.g. 23:00 -> 01:00), turn might be calculated as negative or large?
-        // simple TimeUtils.minutesBetween implies same day if we just use LocalTime.
-        // if f2.dep < f1.arr, it's next day.
         if (f2.getDepTime().isBefore(f1.getArrTime())) 
         {
             if (!allowOvernight) 
